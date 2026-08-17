@@ -9,8 +9,8 @@
 class Ghlink < Formula
   desc "GitHub 链路自愈工具：主动监控连通性，异常时自动换 IP 写 hosts，自检回滚 + 多渠道告警"
   homepage "https://github.com/liwmj/ghlink"
-  url "https://github.com/liwmj/ghlink/archive/refs/tags/v0.2.15.tar.gz"
-  sha256 "4ed8f81d19968b9132525ad41bc23cf630d8f0b9ad266a7ea0572c1e52a4fcc1"
+  url "https://github.com/liwmj/ghlink/archive/refs/tags/v0.2.16.tar.gz"
+  sha256 "4a0212ff31c391c2c1dbb09d9d69e4f0828a462393d6db76f8c1fea8e4f9d947"
   license "MIT"
   head "https://github.com/liwmj/ghlink.git", branch: "master"
 
