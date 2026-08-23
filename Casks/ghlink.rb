@@ -1,6 +1,6 @@
 cask "ghlink" do
   version "0.4.12"
-  sha256 "a2b748a5c93a88836b49fb1124c08d29b2ffeb84d9e3a833eff7600f8dde0ba7"
+  sha256 "e324a030f654aeab07475c72622ceae4fa5a3dcf9fd46f41f884573eb55e0cd4"
 
   url "https://github.com/liwmj/ghlink/releases/download/v#{version}/ghlink-#{version}.pkg",
       verified: "github.com/liwmj/ghlink/"
@@ -13,6 +13,9 @@ cask "ghlink" do
   # - D2：pkg 内含 ghlink.app（双击启动托盘）+ /usr/local/bin/ghlink symlink（对齐 sudoers 放行）
   # - D3：uninstall 钩子调 ghlink uninstall（停任务 + 还原 hosts + 删配置，彻底清理）
   pkg "ghlink-#{version}.pkg"
+
+  # Bug 2 修复（v0.4.12）：vendor 以 python@3.14 编译，运行时锁定同版本（二进制扩展 ABI 兼容）
+  depends_on formula: "python@3.14"
 
   # D3（李工终裁）：卸载时调 ghlink uninstall 彻底清理——停任务 + 还原 hosts + 删配置，
   # 比仅删文件更彻底（含 /etc/hosts 的 ghlink 段落还原、LaunchDaemon 移除、/var/lib/ghlink 清理）
