@@ -19,11 +19,14 @@ cask "ghlink" do
 
   # D3（李工终裁）：卸载时调 ghlink uninstall 彻底清理——停任务 + 还原 hosts + 删配置，
   # 比仅删文件更彻底（含 /etc/hosts 的 ghlink 段落还原、LaunchDaemon 移除、/var/lib/ghlink 清理）
+  # D3 钩子（v0.4.12 修复）：Homebrew 对 sudo:true 的 script 固定用 `/usr/bin/sudo -E`
+  # （preserve environment），部分机器 sudoers 禁 -E → 报 "not allowed to preserve the environment"。
+  # 改为 bash 包装 + 内部普通 sudo 调 ghlink uninstall（sudoers 已放行 ghlink 命令本身）。
   uninstall pkgutil: "com.ghlink.pkg",
             script:  {
-              executable: "/usr/local/bin/ghlink",
-              args:       ["uninstall"],
-              sudo:       true,
+              executable: "/bin/bash",
+              args:       ["-c", "exec sudo /usr/local/bin/ghlink uninstall"],
+              sudo:       false,
             }
 
   # zap：彻底清理残留（brew uninstall --zap ghlink 时执行，二次兜底）
