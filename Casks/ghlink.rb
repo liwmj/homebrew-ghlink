@@ -1,6 +1,6 @@
 cask "ghlink" do
-  version "0.4.15"
-  sha256 "165f97fe401ebd974adb26e87e6a599d5e3cbe20b34069a63cda945c26234dff"
+  version "0.4.16"
+  sha256 "dd3a05090bf0eaf05ed80dba3ec266b1eb88dc35287775fe2ea906e42543bb84"
 
   url "https://github.com/liwmj/ghlink/releases/download/v#{version}/ghlink-#{version}.pkg",
       verified: "github.com/liwmj/ghlink/"
