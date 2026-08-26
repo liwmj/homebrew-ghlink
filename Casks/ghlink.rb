@@ -28,12 +28,15 @@ cask "ghlink" do
   # （软链靠 app 首启才建，brew install 后未首启即缺失）。uninstall script 改
   # /bin/bash -c 容错版：双架构路径自适应（ARM=/opt/homebrew，Intel=/usr/local）+
   # 存在性判断，软链缺失时静默跳过不炸；ghlink uninstall 内部自提权（sudo: false）。
+  # 合并定案（李工 02:48 质疑 + 赛博 03:23 核实）：/bin/bash -c 双架构容错 +
+  # sudo: true——brew 用 sudo 跑 ghlink uninstall（密码在终端正常输入），root 执行
+  # 后 _uninstall_self_elevate 检测 root 直返 None 不再嵌套 sudo；软链缺失静默跳过。
   uninstall script: {
     executable: "/bin/bash",
     args:       ["-c",
                  "if [ -x /opt/homebrew/bin/ghlink ]; then /opt/homebrew/bin/ghlink uninstall; " \
                  "elif [ -x /usr/local/bin/ghlink ]; then /usr/local/bin/ghlink uninstall; fi"],
-    sudo:       false,
+    sudo:       true,
   }
 
   zap trash: [
