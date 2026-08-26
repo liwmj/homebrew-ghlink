@@ -1,6 +1,6 @@
 cask "ghlink" do
-  version "0.5.8"
-  sha256 "3ff8f691ecd7a2dbe39aebd5480670f6a558a0b96e998483dddb59c90364c0ca"
+  version "0.5.9"
+  sha256 "a8ee9abcdcc766f8f3d988c5b28aeba707cde80bf6c15fa808b1e5b8e8c6cab9"
 
   # v0.5.0（李工 13:45 拍板 dmg 路线恢复，拂晓 13:59 定格）：dmg+cask 混合方案
   # - dmg 管 app：拖入 /Applications 即用，无 postinstall/relocate/收据链（Code 112 类问题根治）
