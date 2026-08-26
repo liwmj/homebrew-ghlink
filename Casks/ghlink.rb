@@ -1,41 +1,40 @@
 cask "ghlink" do
   version "0.5.9"
-  sha256 "fd08dabbb4153fb539165761b5e3cacd93ffc6e79a12a95f09c62a7642e5b6df"
+  sha256 "a8ee9abcdcc766f8f3d988c5b28aeba707cde80bf6c15fa808b1e5b8e8c6cab9"
 
-  # v0.5.0（李工 13:45 拍板 dmg 路线恢复，拂晓 13:59 定格）：dmg+cask 混合方案
-  # - dmg 管 app：拖入 /Applications 即用，无 postinstall/relocate/收据链（Code 112 类问题根治）
-  # - 系统组件（LaunchDaemon + sudoers + CLI 软链）走一次性小 pkg：ghlink-#{version}-system.pkg
-  # - 割裂态防护：README 引导装系统组件小 pkg
   url "https://github.com/liwmj/ghlink/releases/download/v#{version}/ghlink-#{version}.dmg",
       verified: "github.com/liwmj/ghlink/"
   name "ghlink"
   desc "GitHub 链路自愈工具：主动监控连通性，异常时自动换 IP 写 hosts，自检回滚 + 多渠道告警"
   homepage "https://github.com/liwmj/ghlink"
 
-  # app 拖入 /Applications（cask 原生 dmg 支持：下载→挂载→拷 .app→Caskroom 记账）
+  depends_on :macos
+
   app "ghlink.app"
 
-  # v0.5.x（李工 14:36「装两个文件离谱」收敛）：不再单独打 system.pkg——
-  # 系统组件（LaunchDaemon + sudoers + /usr/local/bin/ghlink 软链）改 app 首启自装
-  # （tray 启动检测缺失 → 弹管理员授权一次性安装），用户全程只拖一个文件。
+  # v0.5.8（顾笙 00:03 实测定案：brew 移动 app 后双击报 -1712——LaunchServices
+  # 数据库残留旧 bundle 记录（0.5.2），brew 装完不刷新 LS 缓存 → 双击启动失败）。
+  # postflight 强制刷新 LS 注册，确保双击走新 bundle（手动 ditto 安装无此问题）。
+  postflight do
+    lsreg = "/System/Library/Frameworks/CoreServices.framework/Frameworks/" \
+            "LaunchServices.framework/Support/lsregister"
+    system_command lsreg,
+                   args: ["-f", "#{appdir}/ghlink.app"],
+                   sudo: false
+  end
 
-  # vendor 以 python@3.14 编译，运行时锁定同版本（二进制扩展 ABI 兼容）
-  depends_on formula: "python@3.14"
-
-  # 卸载：ghlink uninstall 彻底清理（停任务 + 还原 hosts + 删配置）
   uninstall script: {
-             executable: "/usr/local/bin/ghlink",
-             args:       ["uninstall"],
-             sudo:       false,
-           }
+    executable: "/Applications/ghlink.app/Contents/MacOS/ghlink",
+    args:       ["uninstall"],
+    sudo:       false,
+  }
 
-  # zap：彻底清理残留（brew uninstall --zap ghlink 时执行，二次兜底）
   zap trash: [
-    "/usr/local/etc/ghlink",
     "/opt/homebrew/etc/ghlink",
+    "/usr/local/etc/ghlink",
     "/var/lib/ghlink",
     "~/.ghlink",
-    "~/Library/LaunchAgents/com.ghlink.tray.plist",
     "~/Library/Application Support/ghlink",
+    "~/Library/LaunchAgents/com.ghlink.tray.plist",
   ]
 end
