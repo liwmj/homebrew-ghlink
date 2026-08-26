@@ -13,8 +13,8 @@ cask "ghlink" do
   app "ghlink.app"
 
   # v0.5.8（顾笙 00:03 实测定案：brew 移动 app 后双击报 -1712——LaunchServices
-  # 数据库残留旧 bundle 记录（0.5.2），brew 装完不刷新 LS 缓存 → 双击启动失败）。
-  # postflight 强制刷新 LS 注册，确保双击走新 bundle（手动 ditto 安装无此问题）。
+  # 数据库残留旧 bundle 记录，brew 装完不刷新 LS 缓存 → 双击启动失败）。
+  # postflight 强制刷新 LS 注册，确保双击走新 bundle。
   postflight do
     lsreg = "/System/Library/Frameworks/CoreServices.framework/Frameworks/" \
             "LaunchServices.framework/Support/lsregister"
@@ -23,9 +23,15 @@ cask "ghlink" do
                    sudo: false
   end
 
+  # v0.5.10（拂晓 02:15 实测：checksum 失败→软链没建→卸载脚本炸；ARM 机是
+  # /opt/homebrew/bin 不是 /usr/local/bin）。卸载脚本做存在性判断幂等容错 +
+  # 双架构路径自适应（Intel=/usr/local/bin，ARM=/opt/homebrew/bin）；
+  # ghlink uninstall 内部自提权（sudo 失败回退 osascript 弹窗），sudo: false。
   uninstall script: {
-    executable: "/Applications/ghlink.app/Contents/MacOS/ghlink",
-    args:       ["uninstall"],
+    executable: "/bin/bash",
+    args:       ["-c",
+                 "if [ -x /opt/homebrew/bin/ghlink ]; then /opt/homebrew/bin/ghlink uninstall; " \
+                 "elif [ -x /usr/local/bin/ghlink ]; then /usr/local/bin/ghlink uninstall; fi"],
     sudo:       false,
   }
 
