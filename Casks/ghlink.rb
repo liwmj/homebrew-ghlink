@@ -1,7 +1,7 @@
 cask "ghlink" do
   arch arm: "arm64", intel: "x86_64"
   version "0.5.12"
-  sha256 arm:   "fd256f7803bfc8348812746fc357df2dfe682732b44edabf8f28e3e667946fe5",
+  sha256 arm:   "e24895300eba2d6358945f00f41fc48923b6f10dedd87e2a8dbebd67d93f1dd3",
        intel: "ce7db670009d2e9bb1fbcc03a8ebba93d3308ee29a124a40997e9016e39b25c6"
 
   # v0.5.0（李工 13:45 拍板 dmg 路线恢复，拂晓 13:59 定格）：dmg+cask 混合方案
