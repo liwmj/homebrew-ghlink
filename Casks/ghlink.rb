@@ -1,4 +1,5 @@
 cask "ghlink" do
+  arch arm: "arm64", intel: "x86_64"
   version "0.5.12"
   sha256 arm:   "fa7eb2eca4d64e6324a37ea8318051f7df0040efd9c720db72674b16eafd2a27",
        intel: "28e1110ecadb399e4f07ca20e653c65707eced6cf71db2b61b19e2f45a52272f"
